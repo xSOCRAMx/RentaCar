@@ -6,17 +6,29 @@
 package inacap.webcomponent.rentacar.model;
 
 import java.util.ArrayList;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Table;
 
 /**
  *
- * @author user
+ * @author Marcos
  */
+@Entity
+@Table(name="TipoVehiculo")
 public class TipoVehiculoModel {
+    
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int idTipoVehiculo;
+    
     private String nombreTipoVehiculo;
+    
     private String detalle;
     
-    public static ArrayList<TipoVehiculoModel> tipovehiculos = new ArrayList<>();
+
 
     public int getIdTipoVehiculo() {
         return idTipoVehiculo;
@@ -56,61 +68,8 @@ public class TipoVehiculoModel {
         this.detalle = detalle;
     }
     
-    public boolean nuevoTipoVehiculo(TipoVehiculoModel nuevoTipoVehiculo){
-        int id = 0;
-        
-        if(!tipovehiculos.isEmpty()){
-            for(TipoVehiculoModel tipovehiculo : tipovehiculos){
-                if(tipovehiculo.getIdTipoVehiculo() > id){
-                    id = tipovehiculo.getIdTipoVehiculo();
-                }
-            }
-        }
-        id++;
-        tipovehiculos.add(new TipoVehiculoModel(id, nuevoTipoVehiculo.getNombreTipoVehiculo(), nuevoTipoVehiculo.getDetalle()));
-        
-        return true;
-    }
-    
-    public TipoVehiculoModel buscarTipoVehiculo(int id){
-        TipoVehiculoModel tipoVehiculoEncontrado = null;
-        
-        if(!tipovehiculos.isEmpty()){
-            for(TipoVehiculoModel tipovehiculo : tipovehiculos){
-                if(tipovehiculo.getIdTipoVehiculo() == id){
-                    tipoVehiculoEncontrado = tipovehiculo;
-                }
-            }
-        }
-        return tipoVehiculoEncontrado;
-    }
-    
-    public TipoVehiculoModel editarTipoVehiculo(int id, TipoVehiculoModel tipoVehiculoEditar){
-         TipoVehiculoModel tipoVehiculoEditado = null;
-        
-        if(!tipovehiculos.isEmpty()){
-            for(TipoVehiculoModel tipovehiculo : tipovehiculos){
-                if(tipovehiculo.getIdTipoVehiculo() == id){
-                    tipovehiculo.setNombreTipoVehiculo(tipoVehiculoEditar.getNombreTipoVehiculo());
-                    tipovehiculo.setDetalle(tipoVehiculoEditar.getDetalle());
-                    tipoVehiculoEditado = tipovehiculo;
-                }
-            }
-        }
-        return tipoVehiculoEditado;
-    }
-    
-    public boolean eliminarTipoVehiculo(int id){
-        TipoVehiculoModel tipoVehiculoEliminado = null;
-        
-        if(!tipovehiculos.isEmpty()){
-            for(TipoVehiculoModel tipovehiculo : tipovehiculos){
-                if(tipovehiculo.getIdTipoVehiculo() == id){
-                   tipoVehiculoEliminado = tipovehiculo;
-                }
-            }
-        }
-        tipovehiculos.remove(tipoVehiculoEliminado);
-        return true;
+    @Override
+    public String toString() {
+        return "TipoVehiculo{" + "idTipoVehiculo=" + idTipoVehiculo + ", nombreTipoVehiculo=" + nombreTipoVehiculo + ", detalle=" + detalle + '}';
     }
 }

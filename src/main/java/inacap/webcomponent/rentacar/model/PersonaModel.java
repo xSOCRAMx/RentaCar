@@ -10,7 +10,7 @@ import java.util.Date;
 
 /**
  *
- * @author user
+ * @author Marcos
  */
 public class PersonaModel {
     private int idPersona;

@@ -21,48 +21,86 @@ import org.springframework.http.HttpStatus;
 
 /**
  *
- * @author user
+ * @author Marcos
  */
 @RestController
 @RequestMapping("/tipovehiculos")
 public class TipoVehiculoController {
     
+    @Autowired
+    private CarroceriaRepository  carroceriaRespository;
+    
+    
     @GetMapping()
-    public List<TipoVehiculoModel> list() {
-        return TipoVehiculoModel.tipovehiculos;
+    public Iterable<CarroceriaModel> listarTodos() {
+        
+        return carroceriaRespository.findAll();
+        
     }
+
     
     @GetMapping("/{id}")
-    public Object get(@PathVariable String id) {
-         TipoVehiculoModel tipovehiculo = new TipoVehiculoModel();
-        return tipovehiculo.buscarTipoVehiculo(Integer.parseInt(id));
+    public ResponseEntity<CarroceriaModel> muestraUnaCarroceria(@PathVariable String id) {
+        
+        Optional<CarroceriaModel> aOptional = carroceriaRespository.findById(Integer.parseInt(id));
+        
+        if(aOptional.isPresent()){
+            return new ResponseEntity<>(aOptional.get(), HttpStatus.FOUND);
+        }else{
+        return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+        }
+        
     }
     
     @PutMapping("/{id}")
-    public ResponseEntity<?> put(@PathVariable String id, @RequestBody TipoVehiculoModel tipoVehiculoEditar) {
-        TipoVehiculoModel tipovehiculo = new TipoVehiculoModel();
-       return new ResponseEntity<>(tipovehiculo.editarTipoVehiculo(Integer.parseInt(id), tipoVehiculoEditar), HttpStatus.OK);
+    public ResponseEntity<CarroceriaModel> editaCarroceria(@PathVariable String id, @RequestBody CarroceriaModel carroceriaEditar) {
+        
+        Optional<CarroceriaModel> aOptional = carroceriaRespository.findById(Integer.parseInt(id));
+        
+        if(aOptional.isPresent()){
+            CarroceriaModel aEncontrado = aOptional.get();
+            
+            carroceriaEditar.setIdCarroceria(aEncontrado.getIdCarroceria());
+            
+            carroceriaRespository.save(carroceriaEditar);
+            
+            return new ResponseEntity<>(carroceriaEditar, HttpStatus.OK);
+            
+        }else{
+        return new ResponseEntity<>(null, HttpStatus.NOT_MODIFIED);
+        }
+        
     }
     
     @PostMapping
-    public ResponseEntity<?> post(@RequestBody TipoVehiculoModel nuevoTipoVehiculo) {
-        TipoVehiculoModel tipovehiculo = new TipoVehiculoModel();
-        if(tipovehiculo.nuevoTipoVehiculo(nuevoTipoVehiculo))
-            return new ResponseEntity<>(HttpStatus.CREATED);
-        else{
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    public ResponseEntity<?> agregarCarroceria(@RequestBody CarroceriaModel nuevaCarroceria) {
+      
+        nuevaCarroceria = carroceriaRespository.save(nuevaCarroceria);
+        
+        Optional<CarroceriaModel> aOptional = carroceriaRespository.findById(nuevaCarroceria.getIdCarroceria());
+        
+        if(aOptional.isPresent()){
+            return new ResponseEntity<>(aOptional.get(), HttpStatus.OK);
+        }else{
+        return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
         }
+        
+      
+        
     }
     
     @DeleteMapping("/{id}")
     public ResponseEntity<?> delete(@PathVariable String id) {
-        TipoVehiculoModel tipovehiculo = new TipoVehiculoModel();
         
-        if(tipovehiculo.eliminarTipoVehiculo(Integer.parseInt(id))){
-            return new ResponseEntity<>(HttpStatus.OK);
+        Optional<CarroceriaModel> aOptional = carroceriaRespository.findById(Integer.parseInt(id));
+        
+        if(aOptional.isPresent()){
+            carroceriaRespository.deleteById(Integer.parseInt(id));
+            return new ResponseEntity<>(aOptional.get(), HttpStatus.OK);
         }else{
-            return new ResponseEntity<>(HttpStatus.NOT_ACCEPTABLE);
+        return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
         }
+        
+        
     }
-    
 }

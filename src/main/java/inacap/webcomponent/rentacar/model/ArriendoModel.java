@@ -11,7 +11,7 @@ import java.util.Date;
 
 /**
  *
- * @author user
+ * @author Marcos
  */
 public class ArriendoModel {
     private int idArriendo;

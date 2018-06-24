@@ -21,48 +21,86 @@ import org.springframework.http.HttpStatus;
 
 /**
  *
- * @author user
+ * @author Marcos
  */
 @RestController
 @RequestMapping("/mediospago")
 public class MedioPagoController {
     
+    @Autowired
+    private CarroceriaRepository  carroceriaRespository;
+    
+    
     @GetMapping()
-    public List<MedioPagoModel> list() {
-        return MedioPagoModel.mediospago;
+    public Iterable<CarroceriaModel> listarTodos() {
+        
+        return carroceriaRespository.findAll();
+        
     }
+
     
     @GetMapping("/{id}")
-    public Object get(@PathVariable String id) {
-        MedioPagoModel mediopago = new MedioPagoModel();
-        return mediopago.buscarMedioPago(Integer.parseInt(id));
+    public ResponseEntity<CarroceriaModel> muestraUnaCarroceria(@PathVariable String id) {
+        
+        Optional<CarroceriaModel> aOptional = carroceriaRespository.findById(Integer.parseInt(id));
+        
+        if(aOptional.isPresent()){
+            return new ResponseEntity<>(aOptional.get(), HttpStatus.FOUND);
+        }else{
+        return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+        }
+        
     }
     
     @PutMapping("/{id}")
-    public ResponseEntity<?> put(@PathVariable String id, @RequestBody MedioPagoModel medioPagoEditar) {
-       MedioPagoModel mediopago = new MedioPagoModel();
-       return new ResponseEntity<>(mediopago.editarMedioPago(Integer.parseInt(id), medioPagoEditar), HttpStatus.OK);
+    public ResponseEntity<CarroceriaModel> editaCarroceria(@PathVariable String id, @RequestBody CarroceriaModel carroceriaEditar) {
+        
+        Optional<CarroceriaModel> aOptional = carroceriaRespository.findById(Integer.parseInt(id));
+        
+        if(aOptional.isPresent()){
+            CarroceriaModel aEncontrado = aOptional.get();
+            
+            carroceriaEditar.setIdCarroceria(aEncontrado.getIdCarroceria());
+            
+            carroceriaRespository.save(carroceriaEditar);
+            
+            return new ResponseEntity<>(carroceriaEditar, HttpStatus.OK);
+            
+        }else{
+        return new ResponseEntity<>(null, HttpStatus.NOT_MODIFIED);
+        }
+        
     }
     
     @PostMapping
-    public ResponseEntity<?> post(@RequestBody MedioPagoModel nuevoMedioPago) {
-        MedioPagoModel mediopago = new MedioPagoModel();
-        if(mediopago.nuevoMedioPago(nuevoMedioPago))
-            return new ResponseEntity<>(HttpStatus.CREATED);
-        else{
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    public ResponseEntity<?> agregarCarroceria(@RequestBody CarroceriaModel nuevaCarroceria) {
+      
+        nuevaCarroceria = carroceriaRespository.save(nuevaCarroceria);
+        
+        Optional<CarroceriaModel> aOptional = carroceriaRespository.findById(nuevaCarroceria.getIdCarroceria());
+        
+        if(aOptional.isPresent()){
+            return new ResponseEntity<>(aOptional.get(), HttpStatus.OK);
+        }else{
+        return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
         }
+        
+      
+        
     }
     
     @DeleteMapping("/{id}")
     public ResponseEntity<?> delete(@PathVariable String id) {
-        MedioPagoModel mediopago = new MedioPagoModel();
         
-        if(mediopago.eliminarMedioPago(Integer.parseInt(id))){
-            return new ResponseEntity<>(HttpStatus.OK);
+        Optional<CarroceriaModel> aOptional = carroceriaRespository.findById(Integer.parseInt(id));
+        
+        if(aOptional.isPresent()){
+            carroceriaRespository.deleteById(Integer.parseInt(id));
+            return new ResponseEntity<>(aOptional.get(), HttpStatus.OK);
         }else{
-            return new ResponseEntity<>(HttpStatus.NOT_ACCEPTABLE);
+        return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
         }
+        
+        
     }
-    
 }

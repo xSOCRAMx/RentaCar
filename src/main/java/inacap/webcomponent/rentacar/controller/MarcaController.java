@@ -21,47 +21,86 @@ import org.springframework.http.HttpStatus;
 
 /**
  *
- * @author user
+ * @author Marcos
  */
 @RestController
 @RequestMapping("/marcas")
 public class MarcaController {
     
+    @Autowired
+    private CarroceriaRepository  carroceriaRespository;
+    
+    
     @GetMapping()
-    public List<MarcaModel> list() {
-        return MarcaModel.marcas;
+    public Iterable<CarroceriaModel> listarTodos() {
+        
+        return carroceriaRespository.findAll();
+        
     }
+
     
     @GetMapping("/{id}")
-    public Object get(@PathVariable String id) {
-        MarcaModel marca = new MarcaModel();
-        return marca.buscarMarca(Integer.parseInt(id));
+    public ResponseEntity<CarroceriaModel> muestraUnaCarroceria(@PathVariable String id) {
+        
+        Optional<CarroceriaModel> aOptional = carroceriaRespository.findById(Integer.parseInt(id));
+        
+        if(aOptional.isPresent()){
+            return new ResponseEntity<>(aOptional.get(), HttpStatus.FOUND);
+        }else{
+        return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+        }
+        
     }
     
     @PutMapping("/{id}")
-    public ResponseEntity<?> put(@PathVariable String id, @RequestBody MarcaModel marcaEditar) {
-       MarcaModel marca = new MarcaModel();
-       return new ResponseEntity<>(marca.editarMarca(Integer.parseInt(id), marcaEditar), HttpStatus.OK);
+    public ResponseEntity<CarroceriaModel> editaCarroceria(@PathVariable String id, @RequestBody CarroceriaModel carroceriaEditar) {
+        
+        Optional<CarroceriaModel> aOptional = carroceriaRespository.findById(Integer.parseInt(id));
+        
+        if(aOptional.isPresent()){
+            CarroceriaModel aEncontrado = aOptional.get();
+            
+            carroceriaEditar.setIdCarroceria(aEncontrado.getIdCarroceria());
+            
+            carroceriaRespository.save(carroceriaEditar);
+            
+            return new ResponseEntity<>(carroceriaEditar, HttpStatus.OK);
+            
+        }else{
+        return new ResponseEntity<>(null, HttpStatus.NOT_MODIFIED);
+        }
+        
     }
     
     @PostMapping
-    public ResponseEntity<?> post(@RequestBody MarcaModel nuevaMarca) {
-        MarcaModel marca = new MarcaModel();
-        if(marca.nuevaMarca(nuevaMarca))
-            return new ResponseEntity<>(HttpStatus.CREATED);
-        else{
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    public ResponseEntity<?> agregarCarroceria(@RequestBody CarroceriaModel nuevaCarroceria) {
+      
+        nuevaCarroceria = carroceriaRespository.save(nuevaCarroceria);
+        
+        Optional<CarroceriaModel> aOptional = carroceriaRespository.findById(nuevaCarroceria.getIdCarroceria());
+        
+        if(aOptional.isPresent()){
+            return new ResponseEntity<>(aOptional.get(), HttpStatus.OK);
+        }else{
+        return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
         }
+        
+      
+        
     }
     
     @DeleteMapping("/{id}")
     public ResponseEntity<?> delete(@PathVariable String id) {
-        MarcaModel marca = new MarcaModel();
         
-        if(marca.eliminarMarca(Integer.parseInt(id))){
-            return new ResponseEntity<>(HttpStatus.OK);
+        Optional<CarroceriaModel> aOptional = carroceriaRespository.findById(Integer.parseInt(id));
+        
+        if(aOptional.isPresent()){
+            carroceriaRespository.deleteById(Integer.parseInt(id));
+            return new ResponseEntity<>(aOptional.get(), HttpStatus.OK);
         }else{
-            return new ResponseEntity<>(HttpStatus.NOT_ACCEPTABLE);
+        return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
         }
+        
+        
     }
 }

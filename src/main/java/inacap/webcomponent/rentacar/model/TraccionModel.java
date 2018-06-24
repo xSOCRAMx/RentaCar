@@ -6,17 +6,29 @@
 package inacap.webcomponent.rentacar.model;
 
 import java.util.ArrayList;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Table;
 
 /**
  *
- * @author user
+ * @author Marcos
  */
+@Entity
+@Table(name="Traccion")
 public class TraccionModel {
+    
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int idTraccion;
+    
     private String nombreTraccion;
+    
     private String detalle;
     
-    public static ArrayList<TraccionModel> tracciones = new ArrayList<>();
+
 
     public int getIdTraccion() {
         return idTraccion;
@@ -56,61 +68,8 @@ public class TraccionModel {
         this.detalle = detalle;
     }
     
-     public boolean nuevaTraccion(TraccionModel nuevaTraccion){
-        int id = 0;
-        
-        if(!tracciones.isEmpty()){
-            for(TraccionModel traccion : tracciones){
-                if(traccion.getIdTraccion() > id){
-                    id = traccion.getIdTraccion();
-                }
-            }
-        }
-        id++;
-        tracciones.add(new TraccionModel(id, nuevaTraccion.getNombreTraccion(), nuevaTraccion.getDetalle()));
-        
-        return true;
-    }
-    
-    public TraccionModel buscarTraccion(int id){
-        TraccionModel traccionEncontrada = null;
-        
-        if(!tracciones.isEmpty()){
-            for(TraccionModel traccion : tracciones){
-                if(traccion.getIdTraccion() == id){
-                    traccionEncontrada = traccion;
-                }
-            }
-        }
-        return traccionEncontrada;
-    }
-    
-    public TraccionModel editarTraccion(int id, TraccionModel traccionEditar){
-         TraccionModel traccionEditada = null;
-        
-        if(!tracciones.isEmpty()){
-            for(TraccionModel traccion : tracciones){
-                if(traccion.getIdTraccion() == id){
-                    traccion.setNombreTraccion(traccionEditar.getNombreTraccion());
-                    traccion.setDetalle(traccionEditar.getDetalle());
-                    traccionEditada = traccion;
-                }
-            }
-        }
-        return traccionEditada;
-    }
-    
-    public boolean eliminarTraccion(int id){
-        TraccionModel traccionEliminada = null;
-        
-        if(!tracciones.isEmpty()){
-            for(TraccionModel traccion : tracciones){
-                if(traccion.getIdTraccion() == id){
-                   traccionEliminada = traccion;
-                }
-            }
-        }
-        tracciones.remove(traccionEliminada);
-        return true;
+    @Override
+    public String toString() {
+        return "Traccion{" + "idTraccion=" + idTraccion + ", nombreTraccion=" + nombreTraccion + ", detalle=" + detalle + '}';
     }
 }

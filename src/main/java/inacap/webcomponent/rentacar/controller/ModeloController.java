@@ -21,7 +21,7 @@ import org.springframework.http.HttpStatus;
 
 /**
  *
- * @author user
+ * @author Marcos
  * una vez se añada vista, base de datos, etc. se debe buscar el objeto marca con el id y
  * éste objeto ser pasado a momento de crear, editar modelos.
  */

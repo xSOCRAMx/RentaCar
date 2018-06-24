@@ -20,7 +20,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 
 /**
  *
- * @author user
+ * @author Marcos
  */
 @RestController
 @RequestMapping("/personas")

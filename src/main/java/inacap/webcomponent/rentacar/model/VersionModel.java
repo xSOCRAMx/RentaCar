@@ -9,7 +9,7 @@ import java.util.ArrayList;
 
 /**
  *
- * @author user
+ * @author Marcos
  */
 public class VersionModel {
     private int idVersion;

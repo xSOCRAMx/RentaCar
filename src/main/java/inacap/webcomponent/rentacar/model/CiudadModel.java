@@ -9,7 +9,7 @@ import java.util.ArrayList;
 
 /**
  *
- * @author user
+ * @author Marcos
  */
 public class CiudadModel {
     private int idCiudad;

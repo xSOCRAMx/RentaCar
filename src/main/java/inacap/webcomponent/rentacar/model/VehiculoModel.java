@@ -9,7 +9,7 @@ import java.util.ArrayList;
 
 /**
  *
- * @author user
+ * @author Marcos
  */
 public class VehiculoModel {
     private int idVehiculo;
