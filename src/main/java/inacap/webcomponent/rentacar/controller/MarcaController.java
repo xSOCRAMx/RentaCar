@@ -5,6 +5,7 @@
  */
 package inacap.webcomponent.rentacar.controller;
 
+import inacap.webcomponent.rentacar.Repository.MarcaRepository;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.RequestMapping;
 import java.util.List;
@@ -17,6 +18,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 
 import inacap.webcomponent.rentacar.model.MarcaModel;
+import java.util.Optional;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 
 /**
@@ -28,21 +31,21 @@ import org.springframework.http.HttpStatus;
 public class MarcaController {
     
     @Autowired
-    private CarroceriaRepository  carroceriaRespository;
+    private MarcaRepository  marcaRespository;
     
     
     @GetMapping()
-    public Iterable<CarroceriaModel> listarTodos() {
+    public Iterable<MarcaModel> listarTodos() {
         
-        return carroceriaRespository.findAll();
+        return marcaRespository.findAll();
         
     }
 
     
     @GetMapping("/{id}")
-    public ResponseEntity<CarroceriaModel> muestraUnaCarroceria(@PathVariable String id) {
+    public ResponseEntity<MarcaModel> muestraUnaMarca(@PathVariable String id) {
         
-        Optional<CarroceriaModel> aOptional = carroceriaRespository.findById(Integer.parseInt(id));
+        Optional<MarcaModel> aOptional = marcaRespository.findById(Integer.parseInt(id));
         
         if(aOptional.isPresent()){
             return new ResponseEntity<>(aOptional.get(), HttpStatus.FOUND);
@@ -53,18 +56,18 @@ public class MarcaController {
     }
     
     @PutMapping("/{id}")
-    public ResponseEntity<CarroceriaModel> editaCarroceria(@PathVariable String id, @RequestBody CarroceriaModel carroceriaEditar) {
+    public ResponseEntity<MarcaModel> editaMarca(@PathVariable String id, @RequestBody MarcaModel marcaEditar) {
         
-        Optional<CarroceriaModel> aOptional = carroceriaRespository.findById(Integer.parseInt(id));
+        Optional<MarcaModel> aOptional = marcaRespository.findById(Integer.parseInt(id));
         
         if(aOptional.isPresent()){
-            CarroceriaModel aEncontrado = aOptional.get();
+            MarcaModel aEncontrado = aOptional.get();
             
-            carroceriaEditar.setIdCarroceria(aEncontrado.getIdCarroceria());
+            marcaEditar.setIdMarca(aEncontrado.getIdMarca());
             
-            carroceriaRespository.save(carroceriaEditar);
+            marcaRespository.save(marcaEditar);
             
-            return new ResponseEntity<>(carroceriaEditar, HttpStatus.OK);
+            return new ResponseEntity<>(marcaEditar, HttpStatus.OK);
             
         }else{
         return new ResponseEntity<>(null, HttpStatus.NOT_MODIFIED);
@@ -73,11 +76,11 @@ public class MarcaController {
     }
     
     @PostMapping
-    public ResponseEntity<?> agregarCarroceria(@RequestBody CarroceriaModel nuevaCarroceria) {
+    public ResponseEntity<?> agregarMarca(@RequestBody MarcaModel nuevaMarca) {
       
-        nuevaCarroceria = carroceriaRespository.save(nuevaCarroceria);
+        nuevaMarca = marcaRespository.save(nuevaMarca);
         
-        Optional<CarroceriaModel> aOptional = carroceriaRespository.findById(nuevaCarroceria.getIdCarroceria());
+        Optional<MarcaModel> aOptional = marcaRespository.findById(nuevaMarca.getIdMarca());
         
         if(aOptional.isPresent()){
             return new ResponseEntity<>(aOptional.get(), HttpStatus.OK);
@@ -92,10 +95,10 @@ public class MarcaController {
     @DeleteMapping("/{id}")
     public ResponseEntity<?> delete(@PathVariable String id) {
         
-        Optional<CarroceriaModel> aOptional = carroceriaRespository.findById(Integer.parseInt(id));
+        Optional<MarcaModel> aOptional = marcaRespository.findById(Integer.parseInt(id));
         
         if(aOptional.isPresent()){
-            carroceriaRespository.deleteById(Integer.parseInt(id));
+            marcaRespository.deleteById(Integer.parseInt(id));
             return new ResponseEntity<>(aOptional.get(), HttpStatus.OK);
         }else{
         return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);

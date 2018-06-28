@@ -13,5 +13,9 @@ import org.springframework.data.repository.CrudRepository;
  * @author Marcos
  */
 public interface RegionRepository extends CrudRepository<RegionModel, Integer>{
+
+    public void setIdRegion(int idRegion);
+
+    public void save(RegionRepository regionRespository);
     
 }

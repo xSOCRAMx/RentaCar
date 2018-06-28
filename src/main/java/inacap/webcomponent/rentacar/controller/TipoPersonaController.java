@@ -5,6 +5,7 @@
  */
 package inacap.webcomponent.rentacar.controller;
 
+import inacap.webcomponent.rentacar.Repository.TipoPersonaRepository;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.RequestMapping;
 import java.util.List;
@@ -17,6 +18,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 
 import inacap.webcomponent.rentacar.model.TipoPersonaModel;
+import java.util.Optional;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 
 /**
@@ -28,21 +31,21 @@ import org.springframework.http.HttpStatus;
 public class TipoPersonaController {
     
     @Autowired
-    private CarroceriaRepository  carroceriaRespository;
+    private TipoPersonaRepository  tipopersonaRespository;
     
     
     @GetMapping()
-    public Iterable<CarroceriaModel> listarTodos() {
+    public Iterable<TipoPersonaModel> listarTodos() {
         
-        return carroceriaRespository.findAll();
+        return tipopersonaRespository.findAll();
         
     }
 
     
     @GetMapping("/{id}")
-    public ResponseEntity<CarroceriaModel> muestraUnaCarroceria(@PathVariable String id) {
+    public ResponseEntity<TipoPersonaModel> muestraUnTipoPersona(@PathVariable String id) {
         
-        Optional<CarroceriaModel> aOptional = carroceriaRespository.findById(Integer.parseInt(id));
+        Optional<TipoPersonaModel> aOptional = tipopersonaRespository.findById(Integer.parseInt(id));
         
         if(aOptional.isPresent()){
             return new ResponseEntity<>(aOptional.get(), HttpStatus.FOUND);
@@ -53,18 +56,18 @@ public class TipoPersonaController {
     }
     
     @PutMapping("/{id}")
-    public ResponseEntity<CarroceriaModel> editaCarroceria(@PathVariable String id, @RequestBody CarroceriaModel carroceriaEditar) {
+    public ResponseEntity<TipoPersonaModel> editaCarroceria(@PathVariable String id, @RequestBody TipoPersonaModel tipopersonaEditar) {
         
-        Optional<CarroceriaModel> aOptional = carroceriaRespository.findById(Integer.parseInt(id));
+        Optional<TipoPersonaModel> aOptional = tipopersonaRespository.findById(Integer.parseInt(id));
         
         if(aOptional.isPresent()){
-            CarroceriaModel aEncontrado = aOptional.get();
+            TipoPersonaModel aEncontrado = aOptional.get();
             
-            carroceriaEditar.setIdCarroceria(aEncontrado.getIdCarroceria());
+            tipopersonaEditar.setIdPersona(aEncontrado.getIdPersona());
             
-            carroceriaRespository.save(carroceriaEditar);
+            tipopersonaRespository.save(tipopersonaEditar);
             
-            return new ResponseEntity<>(carroceriaEditar, HttpStatus.OK);
+            return new ResponseEntity<>(tipopersonaEditar, HttpStatus.OK);
             
         }else{
         return new ResponseEntity<>(null, HttpStatus.NOT_MODIFIED);
@@ -73,11 +76,11 @@ public class TipoPersonaController {
     }
     
     @PostMapping
-    public ResponseEntity<?> agregarCarroceria(@RequestBody CarroceriaModel nuevaCarroceria) {
+    public ResponseEntity<?> agregarTipoPersona(@RequestBody TipoPersonaModel nuevoTipoPersona) {
       
-        nuevaCarroceria = carroceriaRespository.save(nuevaCarroceria);
+        nuevoTipoPersona = tipopersonaRespository.save(nuevoTipoPersona);
         
-        Optional<CarroceriaModel> aOptional = carroceriaRespository.findById(nuevaCarroceria.getIdCarroceria());
+        Optional<TipoPersonaModel> aOptional = tipopersonaRespository.findById(nuevoTipoPersona.getIdPersona());
         
         if(aOptional.isPresent()){
             return new ResponseEntity<>(aOptional.get(), HttpStatus.OK);
@@ -92,10 +95,10 @@ public class TipoPersonaController {
     @DeleteMapping("/{id}")
     public ResponseEntity<?> delete(@PathVariable String id) {
         
-        Optional<CarroceriaModel> aOptional = carroceriaRespository.findById(Integer.parseInt(id));
+        Optional<TipoPersonaModel> aOptional = tipopersonaRespository.findById(Integer.parseInt(id));
         
         if(aOptional.isPresent()){
-            carroceriaRespository.deleteById(Integer.parseInt(id));
+            tipopersonaRespository.deleteById(Integer.parseInt(id));
             return new ResponseEntity<>(aOptional.get(), HttpStatus.OK);
         }else{
         return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);

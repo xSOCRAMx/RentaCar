@@ -5,6 +5,7 @@
  */
 package inacap.webcomponent.rentacar.controller;
 
+import inacap.webcomponent.rentacar.Repository.CombustibleRepository;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.http.ResponseEntity;
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 
 import inacap.webcomponent.rentacar.model.CombustibleModel;
+import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 
@@ -28,21 +30,21 @@ import org.springframework.http.HttpStatus;
 public class CombustibleController {
     
     @Autowired
-    private CarroceriaRepository  carroceriaRespository;
+    private CombustibleRepository  combustibleRespository;
     
     
     @GetMapping()
-    public Iterable<CarroceriaModel> listarTodos() {
+    public Iterable<CombustibleModel> listarTodos() {
         
-        return carroceriaRespository.findAll();
+        return combustibleRespository.findAll();
         
     }
 
     
     @GetMapping("/{id}")
-    public ResponseEntity<CarroceriaModel> muestraUnaCarroceria(@PathVariable String id) {
+    public ResponseEntity<CombustibleModel> muestraUnaCarroceria(@PathVariable String id) {
         
-        Optional<CarroceriaModel> aOptional = carroceriaRespository.findById(Integer.parseInt(id));
+        Optional<CombustibleModel> aOptional = combustibleRespository.findById(Integer.parseInt(id));
         
         if(aOptional.isPresent()){
             return new ResponseEntity<>(aOptional.get(), HttpStatus.FOUND);
@@ -53,18 +55,18 @@ public class CombustibleController {
     }
     
     @PutMapping("/{id}")
-    public ResponseEntity<CarroceriaModel> editaCarroceria(@PathVariable String id, @RequestBody CarroceriaModel carroceriaEditar) {
+    public ResponseEntity<CombustibleModel> editaCombustible(@PathVariable String id, @RequestBody CombustibleModel combustibleEditar) {
         
-        Optional<CarroceriaModel> aOptional = carroceriaRespository.findById(Integer.parseInt(id));
+        Optional<CombustibleModel> aOptional = combustibleRespository.findById(Integer.parseInt(id));
         
         if(aOptional.isPresent()){
-            CarroceriaModel aEncontrado = aOptional.get();
+            CombustibleModel aEncontrado = aOptional.get();
             
-            carroceriaEditar.setIdCarroceria(aEncontrado.getIdCarroceria());
+            combustibleEditar.setIdCombustible(aEncontrado.getIdCombustible());
             
-            carroceriaRespository.save(carroceriaEditar);
+            combustibleRespository.save(combustibleEditar);
             
-            return new ResponseEntity<>(carroceriaEditar, HttpStatus.OK);
+            return new ResponseEntity<>(combustibleEditar, HttpStatus.OK);
             
         }else{
         return new ResponseEntity<>(null, HttpStatus.NOT_MODIFIED);
@@ -73,11 +75,11 @@ public class CombustibleController {
     }
     
     @PostMapping
-    public ResponseEntity<?> agregarCarroceria(@RequestBody CarroceriaModel nuevaCarroceria) {
+    public ResponseEntity<?> agregarCombustible(@RequestBody CombustibleModel nuevoCombustible) {
       
-        nuevaCarroceria = carroceriaRespository.save(nuevaCarroceria);
+        nuevoCombustible = combustibleRespository.save(nuevoCombustible);
         
-        Optional<CarroceriaModel> aOptional = carroceriaRespository.findById(nuevaCarroceria.getIdCarroceria());
+        Optional<CombustibleModel> aOptional = combustibleRespository.findById(nuevoCombustible.getIdCombustible());
         
         if(aOptional.isPresent()){
             return new ResponseEntity<>(aOptional.get(), HttpStatus.OK);
@@ -92,10 +94,10 @@ public class CombustibleController {
     @DeleteMapping("/{id}")
     public ResponseEntity<?> delete(@PathVariable String id) {
         
-        Optional<CarroceriaModel> aOptional = carroceriaRespository.findById(Integer.parseInt(id));
+        Optional<CombustibleModel> aOptional = combustibleRespository.findById(Integer.parseInt(id));
         
         if(aOptional.isPresent()){
-            carroceriaRespository.deleteById(Integer.parseInt(id));
+            combustibleRespository.deleteById(Integer.parseInt(id));
             return new ResponseEntity<>(aOptional.get(), HttpStatus.OK);
         }else{
         return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
